@@ -6,13 +6,26 @@
 </head>
 
 <body>
-    <a href="/pokedex.html"><img src="img/logo.png"></a>
+    <a href="/pokedex.html"><img class ="logo"src="img/logo.png"></a>
 
     <form id="searchform"><input type="text" id="search" class="search"
     placeholder="Search here"></form>
     
-    <div id="poke-container" class="poke-container">
-        
+    <div class="container">
+        <ol id="pokedex"></ol>
+    </div>
+
+
+    <div id="loader">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+    </div>
+    <div class="card-actions">
+        <span>Showing
+            <span id="card-count"></span> of
+            <span id="card-total"></span> cards
+        </span>
     </div>
     <script src="pokedex.js"></script>
 </body>

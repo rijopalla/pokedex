@@ -1,67 +1,94 @@
 let pokemon_list = [];
 const poke_container = document.getElementById("poke-container");
-const url = "https://pokeapi.co/api/v2/pokemon/";
-const poke_number = 300;
+const poke_number = 750;
 const search = document.getElementById("search");
 const form = document.getElementById("searchform");
 
-const fetchPokemon = async() => {
+const cardCountElem = document.getElementById("card-count");
+const cardTotalElem = document.getElementById("card-total");
+const loader = document.getElementById("loader");
+const cardIncrease = 10;
+const cardLimit = poke_number;
+
+cardTotalElem.innerHTML = cardLimit;
+
+const pageCount = Math.ceil(cardLimit/cardIncrease);
+
+let currentPage = 1;
+
+const pokedex = document.getElementById("pokedex");
+console.log(pokedex);
+
+const fetchPokemon = () => {
+    const promises = [];
     for (let i = 1; i <= poke_number; i++) {
-        await getAllPokemon(i);
+        const api = `https://pokeapi.co/api/v2/pokemon/${i}`
+        promises.push(fetch(api).then((res)=> res.json()));
     }
-    pokemon_list.forEach((pokemon) => createPokemonCard(pokemon));
+
+    Promise.all(promises).then(results => {
+        const pokemon = results.map(data => ({
+            name: data.name,
+            id: data.id,
+            image: data.sprites['front_default'],
+            type: data.types.map((type) => type.type.name).join(', '),
+            height: data.height    
+        }));
+        console.log(pokemon.height);
+        displayPokemon(pokemon);
+    });
 };
 
-const removePokemon = () => {
-    const pokemonEls = document.getElementsByClassName("pokemon");
-    let removablePokemons = [];
-    for (let i = 0; i < pokemonEls.length; i++) {
-        const pokemonEl = pokemonEls[i];
-        removablePokemons = [...removablePokemons, pokemonEl];
-    }
-    removablePokemons.forEach((remPoke) => remPoke.remove());
+const getRandomColor = () => {
+    const h = Math.floor(Math.random() * 360);
+    return `hsl(${h}deg, 75%, 85%)`;
 };
 
-const getPokemon = async(id) => {
-    const searchPokemon = pokemon_list.filter((pokemon) => pokemon.name === id);
-    removePokemon();
-    searchPokemon.forEach((pokemon) => createPokemonCard(pokemon));
-};
-
-const getAllPokemon = async(id) => {
-    const res = await fetch(`${url}${id}/`);
-    const pokemon = await res.json();
-    pokemon_list = [...pokemon_list,pokemon];
-};
-
-fetchPokemon();
-
-function createPokemonCard(pokemon){
-    const pokemonEl = document.createElement("div");
-    pokemonEl.classList.add("pokemon");
-    const poke_types = pokemon.types.map((el) => el.type.name).slice(0,1);
-    const name = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
-    const pokeInnerHTML = `<div class="img-container"> 
-    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png"/>
-    </div>
-    <div class="info">
-    <span class="number">#${pokemon.id.toString().padStart(3,"0")}</span>
-    <h3 class="name">${name}</h3>
-    <small class="type"> <span>${poke_types}</span></small>
-    </div>`
-    pokemonEl.innerHTML = pokeInnerHTML;
-    poke_container.appendChild(pokemonEl);
+const displayPokemon = (pokemon) => {
+    const pokemonHTMLString = pokemon.map(poke => `
+    <li class="card" onclick="selectPokemon(${poke.id})">
+        <img class = "card-image" src="${poke.image}"/>
+        <h2 class = "card-title">${poke.id}. ${poke.name}</h2>
+        <p class = "card-subtitle"> Type: ${poke.type}</p>
+    </li>
+    `).join('');
+    pokedex.innerHTML = pokemonHTMLString;
 }
 
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const searchTerm = search.value;
-    if (searchTerm) {
-        getPokemon(searchTerm);
-        search.value = "";
-    } else if (searchTerm === "") {
-        pokemon_list = [];
-        removePokemon();
-        fetchPokemon();
-    }
-});
+const selectPokemon = async(id) => {
+    const api = `https://pokeapi.co/api/v2/pokemon/${id}`;
+    const res = await fetch(api);
+    const pokemon = await res.json();
+    displayPopup(pokemon);
+}
+
+const displayPopup = (pokemon) => {
+    console.log(pokemon);
+    const type = pokemon.types.map(type => type.type.name).join(', ');
+    const image = pokemon.sprites['front_default'];
+    const ability = pokemon.abilities.map(abilities => abilities.ability.name).join(', ');
+    const htmlString = `
+        <div class="popup">
+            <button id="closeBtn"
+            onclick="closePopup()">Close
+            </button>
+            <div class="card">
+                <img class = "card-image" src="${image}"/>
+                <h2 class = "card-title">${pokemon.id}. ${pokemon.name}</h2>
+                <p><small>Height: </small> ${pokemon.height} |
+                <small> Weight: </small> ${pokemon.weight} |
+                <small> Type: </small> ${type} | 
+                <small> Ability: </small> ${ability}</p> 
+            </div>
+        </div>
+    `;
+    console.log(htmlString);
+    pokedex.innerHTML = htmlString + pokedex.innerHTML;
+}
+
+const closePopup = () => {
+    const popup = document.querySelector('.popup');
+    popup.parentElement.removeChild(popup);
+}
+
+fetchPokemon();
