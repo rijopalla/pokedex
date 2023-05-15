@@ -1,47 +1,29 @@
-let pokemon_list = [];
-const poke_container = document.getElementById("poke-container");
-const poke_number = 750;
-const search = document.getElementById("search");
-const form = document.getElementById("searchform");
+const pokemonList = [];
+const maxIndex = 250;
+const search = document.getElementById('search-bar');
 
-const cardCountElem = document.getElementById("card-count");
-const cardTotalElem = document.getElementById("card-total");
-const loader = document.getElementById("loader");
-const cardIncrease = 10;
-const cardLimit = poke_number;
-
-cardTotalElem.innerHTML = cardLimit;
-
-const pageCount = Math.ceil(cardLimit/cardIncrease);
-
-let currentPage = 1;
+let initialItems = 10;
+let loadItems = 10;
 
 const pokedex = document.getElementById("pokedex");
-console.log(pokedex);
 
 const fetchPokemon = () => {
     const promises = [];
-    for (let i = 1; i <= poke_number; i++) {
+    for (let i = 1; i <= maxIndex; i++) {
         const api = `https://pokeapi.co/api/v2/pokemon/${i}`
         promises.push(fetch(api).then((res)=> res.json()));
     }
 
     Promise.all(promises).then(results => {
-        const pokemon = results.map(data => ({
+        let pokemon = results.map(data => ({
             name: data.name,
             id: data.id,
             image: data.sprites['front_default'],
-            type: data.types.map((type) => type.type.name).join(', '),
-            height: data.height    
+            type: data.types.map((type) => type.type.name).join(', ')   
         }));
-        console.log(pokemon.height);
         displayPokemon(pokemon);
+        pokemonList.push(pokemon);
     });
-};
-
-const getRandomColor = () => {
-    const h = Math.floor(Math.random() * 360);
-    return `hsl(${h}deg, 75%, 85%)`;
 };
 
 const displayPokemon = (pokemon) => {
@@ -57,16 +39,27 @@ const displayPokemon = (pokemon) => {
 
 const selectPokemon = async(id) => {
     const api = `https://pokeapi.co/api/v2/pokemon/${id}`;
+    const speciesapi = `https://pokeapi.co/api/v2/pokemon-species/${id}/`
     const res = await fetch(api);
+    const res2 = await fetch(speciesapi);
     const pokemon = await res.json();
-    displayPopup(pokemon);
+    const desc = await res2.json();
+    displayPopup(pokemon, desc);
 }
 
-const displayPopup = (pokemon) => {
-    console.log(pokemon);
+const displayPopup = (pokemon, desc) => {
+    const description = desc.flavor_text_entries[1].flavor_text;
+    const habitat = desc.habitat.name;
     const type = pokemon.types.map(type => type.type.name).join(', ');
     const image = pokemon.sprites['front_default'];
+    const weakness = getWeakness(type);
     const ability = pokemon.abilities.map(abilities => abilities.ability.name).join(', ');
+    const hpStat = pokemon.stats[0].base_stat;
+    const attStat = pokemon.stats[1].base_stat;
+    const defStat = pokemon.stats[2].base_stat;
+    const spatkStat = pokemon.stats[3].base_stat;
+    const spdefStat = pokemon.stats[4].base_stat;
+    const spdStat = pokemon.stats[5].base_stat;
     const htmlString = `
         <div class="popup">
             <button id="closeBtn"
@@ -78,17 +71,102 @@ const displayPopup = (pokemon) => {
                 <p><small>Height: </small> ${pokemon.height} |
                 <small> Weight: </small> ${pokemon.weight} |
                 <small> Type: </small> ${type} | 
-                <small> Ability: </small> ${ability}</p> 
+                <small> Ability: </small> ${ability} |
+                <small> Habitat: </small> ${habitat}</p> 
+                <ul> Base Stats: 
+                    <li> HP: ${hpStat} </li>
+                    <li> Attack: ${attStat} </li>
+                    <li> Defense: ${defStat} </li>
+                    <li> Special Attack: ${spatkStat} </li>
+                    <li> Special Defense: ${spdefStat} </li>
+                    <li> Speed: ${spdStat} </li>
+                </ul>
+                <p> Weaknesses: ${weakness}</p>
+                <p> ${description} </p>
             </div>
         </div>
     `;
-    console.log(htmlString);
     pokedex.innerHTML = htmlString + pokedex.innerHTML;
 }
 
+const getWeakness = (type) => {
+    const typeString = type.split(',');
+    const weaknessList = [];
+    typeString.forEach(type => {
+        switch(type) {
+            case "normal":
+                weaknessList.push("rock, ghost, steel");
+                break;
+            case "fighting":
+                weaknessList.push("flying, poison, psychic, bug, ghost, fairy");
+                break;
+            case "flying":
+                weaknessList.push("rock, steel, electric");
+                break;
+            case "poison":
+                weaknessList.push("poison, ground, rock, ghost, steel");
+                break;
+            case "ground":
+                weaknessList.push("flying, bug, grass");
+                break;
+            case "rock":
+                weaknessList.push("fighting, ground, steel, water, grass");
+                break;
+            case "bug":
+                weaknessList.push("fighting, flying, poison, ghost, steel, fire, fairy");
+                break;
+            case "ghost":
+                weaknessList.push("normal, dark, ghost");
+                break;
+            case "steel":
+                weaknessList.push("steel, fire, water, electric");
+                break;
+            case "fire":
+                weaknessList.push("rock, fire, water, dragon");
+                break;
+            case "water":
+                weaknessList.push("water, grass, dragon");
+                break;
+            case "grass":
+                weaknessList.push("flying, poison, bug, steel, fire, grass, dragon");
+                break;
+            case "electric":
+                weaknessList.push("ground, grass, electric, dragon");
+                break;
+            case "psychic":
+                weaknessList.push("steel, psychic, dark");
+                break;
+            case "ice":
+                weaknessList.push("steel, fire, water, ice");
+                break;
+            case "dragon":
+                weaknessList.push("steel, fairy");
+                break;
+            case "fairy":
+                weaknessList.push("poison, steel, fire");
+                break;
+            case "dark":
+                weaknessList.push("fighting, dark, fairy");
+                break;
+        }
+    });
+    return weaknessList.join(', ');
+    
+}
 const closePopup = () => {
     const popup = document.querySelector('.popup');
     popup.parentElement.removeChild(popup);
 }
 
 fetchPokemon();
+
+search.addEventListener('keyup', (e) => {
+    console.log(pokemonList[0].value);
+    const searchTarget = e.target.value;
+    const result = pokemonList[0].includes(searchTarget);
+    console.log(result);
+    // const filteredPokemon = pokemonList.filter((pokemon) => {
+    //     return pokemon.name.includes(searchTarget);
+    // });
+    // console.log(filteredPokemon);
+})

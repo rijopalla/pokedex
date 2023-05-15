@@ -11,6 +11,10 @@ body {
     background: #f9f9f9;
 }
 
+ul {
+    list-style-type: none;
+}
+
 .logo {
     display: block;
     margin-left: auto;
@@ -22,6 +26,10 @@ body {
     margin: 0 auto;
     display: block;
 }
+
+img:hover {
+    cursor: default;
+}
 .card {
     list-style: none;
     padding: 40px;
@@ -31,7 +39,7 @@ body {
 }
 
 .card-title {
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-size: 25px;
     font-weight: normal;
     margin-bottom: 0;
@@ -110,7 +118,7 @@ button:hover {
     box-shadow: 0px 1px 2px darkred;
 }
 
-.search {
+.search-bar {
     width: 250px;
     height: 40px;
     outline: none;

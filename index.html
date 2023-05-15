@@ -8,8 +8,14 @@
 <body>
     <a href="/pokedex.html"><img class ="logo"src="img/logo.png"></a>
 
-    <form id="searchform"><input type="text" id="search" class="search"
-    placeholder="Search here"></form>
+    <div id="searchWrapper">
+        <input 
+            type="text"
+            name="search-bar"
+            id="search-bar"
+            placeholder="Search Pokemon"
+        />
+    </div>
     
     <div class="container">
         <ol id="pokedex"></ol>
@@ -21,11 +27,13 @@
         <div class="skeleton-card"></div>
         <div class="skeleton-card"></div>
     </div>
+    
     <div class="card-actions">
         <span>Showing
             <span id="card-count"></span> of
             <span id="card-total"></span> cards
         </span>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="pokedex.js"></script>
 </body>
