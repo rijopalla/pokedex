@@ -9,7 +9,7 @@ As of writing, the webpage has the following capabilities:
     <li> Detailed View </li>
     You can click on the Pokemon's card to show its ID, Name, Type Height, Weight, Abilities, Habitat, Base Stats, Weaknesses, and Description.
     <li> Sorting </li>
-    You can choose how to sort the Pokemon shown by clicking on the buttons labeled <em>Sort Alphabetically </em> and <em>Sort By Number</em> at the bottom of the page.
+    You can choose how to sort the Pokemon shown by clicking on the buttons labeled <em>Sort By Name </em> and <em>Sort By ID Number</em> at the bottom of the page.
 </ol>
 <br> 
-The website currently shows 250 Pokemon (until Ho-oh). 
+The website currently shows 386 Pokemon (until Deoxys-Normal). 

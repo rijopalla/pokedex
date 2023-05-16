@@ -1,5 +1,5 @@
 const pokemonList = [];
-const maxIndex = 250;
+const maxIndex = 386;
 const search = document.getElementById('search-bar');
 
 let initialItems = 10;
@@ -181,7 +181,6 @@ search.addEventListener('keyup', (e) => {
     e.preventDefault();
 
     const searchTarget = e.target.value.toLowerCase();
-    console.log(searchTarget);
     const filteredPokemon = [];
 
     for (let j = 0; j < maxIndex; j++) {
@@ -193,7 +192,6 @@ search.addEventListener('keyup', (e) => {
         }
     }
     getPokemon(filteredPokemon);
-    console.log(filteredPokemon);
     if (searchTarget === "") {
         fetchPokemon();
     }
@@ -201,7 +199,6 @@ search.addEventListener('keyup', (e) => {
 
 
 const sortAZ = () => {
-    console.log("sorting");
     const pokemonNames = [];
     const promises = [];
     for (let i = 0; i < maxIndex; i++) {
@@ -210,7 +207,6 @@ const sortAZ = () => {
     const sortedPokemon = pokemonNames.sort();
     
     for (let j = 0; j < sortedPokemon.length; j++) {
-        console.log(typeof(sortedPokemon[j]));
         const api = `https://pokeapi.co/api/v2/pokemon/${sortedPokemon[j]}`
         promises.push(fetch(api).then((res)=> res.json()));
     }
