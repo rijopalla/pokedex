@@ -22,9 +22,16 @@ ul {
     width: 50%;
 }
 
-#searchform {
-    margin: 0 auto;
-    display: block;
+#search-bar {
+    width: 25%;
+    height: 40px;
+    border-radius: 3px;
+    border: 1px solid black;
+    margin-top: 50px;
+    margin-left: auto;
+    display: inline-block;
+    margin-right: auto;
+    position: relative;
 }
 
 img:hover {

@@ -185,16 +185,16 @@ search.addEventListener('keyup', (e) => {
     const filteredPokemon = [];
 
     for (let j = 0; j < maxIndex; j++) {
-        // console.log(pokemonList[0][j].name);
         if (pokemonList[0][j].name.includes(searchTarget)){
+            filteredPokemon.push(pokemonList[0][j].id);
+        }
+        else if (pokemonList[0][j].id === parseInt(searchTarget)) {
             filteredPokemon.push(pokemonList[0][j].id);
         }
     }
     getPokemon(filteredPokemon);
     console.log(filteredPokemon);
-    // const filteredPokemon = pokemonList.filter((pokemon) => {
-    //     return pokemon.name.includes(searchTarget);
-    // });
-    // console.log(filteredPokemon);
-    
-})
+    if (searchTarget === "") {
+        fetchPokemon();
+    }
+});
