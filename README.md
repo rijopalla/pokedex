@@ -2,7 +2,7 @@
 This is my entry for Old.St Labs' Technical Assessment, as part of its internship program. The task is to create a simple catalogue webpage themed after Pokemon. 
 
 # Functions
-As of writing, the website has the following capabilities:
+As of writing, the webpage has the following capabilities:
 <ol>
     <li> Search </li>
     You can search for a Pokemon using its ID or Name
