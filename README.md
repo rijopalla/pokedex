@@ -8,5 +8,7 @@ As of writing, the website has the following capabilities:
     You can search for a Pokemon using its ID or Name
     <li> Detailed View </li>
     You can click on the Pokemon's card to show its ID, Name, Type Height, Weight, Abilities, Habitat, Base Stats, Weaknesses, and Description.
+    <li> Sorting </li>
+    You can choose how to sort the Pokemon shown by clicking on the buttons labeled *Sort Alphabetically* and *Sort By Number* at the bottom of the page.
 </ol>
 The website currently shows 250 Pokemon (until Ho-oh). 

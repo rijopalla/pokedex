@@ -39,9 +39,9 @@ const displayPokemon = (pokemon) => {
 }
 
 
-const getPokemon = async(id) => {
+const getPokemon = (id) => {
     const promises = [];
-    const api = `https://pokeapi.co/api/v2/pokemon/${id}`
+    const api = `https://pokeapi.co/api/v2/pokemon/${id}/`
     promises.push(fetch(api).then((res)=> res.json()));
     Promise.all(promises).then(results => {
         let pokemon = results.map(data => ({
@@ -198,3 +198,30 @@ search.addEventListener('keyup', (e) => {
         fetchPokemon();
     }
 });
+
+
+const sortAZ = () => {
+    console.log("sorting");
+    const pokemonNames = [];
+    const promises = [];
+    for (let i = 0; i < maxIndex; i++) {
+        pokemonNames.push(pokemonList[0][i].name);
+    }
+    const sortedPokemon = pokemonNames.sort();
+    
+    for (let j = 0; j < sortedPokemon.length; j++) {
+        console.log(typeof(sortedPokemon[j]));
+        const api = `https://pokeapi.co/api/v2/pokemon/${sortedPokemon[j]}`
+        promises.push(fetch(api).then((res)=> res.json()));
+    }
+
+    Promise.all(promises).then(results => {
+        let pokemon = results.map(data => ({
+            name: data.name,
+            id: data.id,
+            image: data.sprites['front_default'],
+            type: data.types.map((type) => type.type.name).join(', ')   
+        }));
+        displayPokemon(pokemon);
+    });
+}
