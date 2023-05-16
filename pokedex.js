@@ -26,6 +26,7 @@ const fetchPokemon = () => {
     });
 };
 
+
 const displayPokemon = (pokemon) => {
     const pokemonHTMLString = pokemon.map(poke => `
     <li class="card" onclick="selectPokemon(${poke.id})">
@@ -37,6 +38,22 @@ const displayPokemon = (pokemon) => {
     pokedex.innerHTML = pokemonHTMLString;
 }
 
+
+const getPokemon = async(id) => {
+    const promises = [];
+    const api = `https://pokeapi.co/api/v2/pokemon/${id}`
+    promises.push(fetch(api).then((res)=> res.json()));
+    Promise.all(promises).then(results => {
+        let pokemon = results.map(data => ({
+            name: data.name,
+            id: data.id,
+            image: data.sprites['front_default'],
+            type: data.types.map((type) => type.type.name).join(', ')   
+        }));
+        displayPokemon(pokemon);
+    });
+}
+
 const selectPokemon = async(id) => {
     const api = `https://pokeapi.co/api/v2/pokemon/${id}`;
     const speciesapi = `https://pokeapi.co/api/v2/pokemon-species/${id}/`
@@ -44,10 +61,10 @@ const selectPokemon = async(id) => {
     const res2 = await fetch(speciesapi);
     const pokemon = await res.json();
     const desc = await res2.json();
-    displayPopup(pokemon, desc);
+    showPopup(pokemon, desc);
 }
 
-const displayPopup = (pokemon, desc) => {
+const showPopup = (pokemon, desc) => {
     const description = desc.flavor_text_entries[1].flavor_text;
     const habitat = desc.habitat.name;
     const type = pokemon.types.map(type => type.type.name).join(', ');
@@ -161,12 +178,23 @@ const closePopup = () => {
 fetchPokemon();
 
 search.addEventListener('keyup', (e) => {
-    console.log(pokemonList[0].value);
-    const searchTarget = e.target.value;
-    const result = pokemonList[0].includes(searchTarget);
-    console.log(result);
+    e.preventDefault();
+
+    const searchTarget = e.target.value.toLowerCase();
+    console.log(searchTarget);
+    const filteredPokemon = [];
+
+    for (let j = 0; j < maxIndex; j++) {
+        // console.log(pokemonList[0][j].name);
+        if (pokemonList[0][j].name.includes(searchTarget)){
+            filteredPokemon.push(pokemonList[0][j].id);
+        }
+    }
+    getPokemon(filteredPokemon);
+    console.log(filteredPokemon);
     // const filteredPokemon = pokemonList.filter((pokemon) => {
     //     return pokemon.name.includes(searchTarget);
     // });
     // console.log(filteredPokemon);
+    
 })
