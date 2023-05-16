@@ -11,4 +11,5 @@ As of writing, the website has the following capabilities:
     <li> Sorting </li>
     You can choose how to sort the Pokemon shown by clicking on the buttons labeled <em>Sort Alphabetically </em> and <em>Sort By Number</em> at the bottom of the page.
 </ol>
+<br> 
 The website currently shows 250 Pokemon (until Ho-oh). 
